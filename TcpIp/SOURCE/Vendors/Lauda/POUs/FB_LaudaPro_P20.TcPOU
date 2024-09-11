@@ -46,7 +46,7 @@ END_IF
 
 // Send teperature only on change
 IF fPrevTemperatureSet <> fTemperatureSet OR bFirstExecution THEN
-	{warning 'NAdaljuj z implementacijo bufferja!'}
+	{warning 'Nadaljuj z implementacijo bufferja!'}
 	EnqueueCommand(
 		sCommand := LaudaHelper.Commands.Write.Temperature.TemperatureSet, 
 		fValue := fTemperatureSet);
