@@ -102,7 +102,13 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaCommParameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaHelper.TcPOU">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaPendingCommand.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaCommandGenerator.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\POUs\LaudaHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaPro_P20.TcPOU">

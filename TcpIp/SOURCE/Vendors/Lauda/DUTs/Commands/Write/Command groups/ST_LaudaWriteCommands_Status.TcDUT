@@ -3,7 +3,8 @@
   <DUT Name="ST_LaudaWriteCommands_Status" Id="{5d0b82e9-fdd1-48e1-b22b-6fd76299a00a}">
     <Declaration><![CDATA[TYPE ST_LaudaWriteCommands_Status :
 STRUCT
-	StartStop	: STRING := 'STARTSTOP';
+	Start	: STRING := 'START';
+	Stop	: STRING := 'STOP';
 END_STRUCT
 END_TYPE
 ]]></Declaration>

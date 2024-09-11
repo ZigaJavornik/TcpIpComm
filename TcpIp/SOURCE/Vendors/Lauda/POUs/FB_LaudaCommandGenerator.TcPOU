@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LaudaCommandGenerator" Id="{cbcd6d20-910e-47bc-b6f3-8dab272208fe}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaCommandGenerator
+VAR_INPUT
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+	_formatString	: Tc2_Utilities.FB_FormatString;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="SafetyActivate" Id="{bf63396d-28e1-4bd8-b5ea-c1f5b8485007}">
+      <Declaration><![CDATA[// Activates safety mode.
+METHOD PUBLIC SafetyActivate : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SafetyActivate := LaudaHelper.AddSuffix(
+	sData := CONCAT(STR1 := LaudaHelper.Commands.Write.Safety.ActivateSafetyMode, STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SafetyDeactivate" Id="{d96d9acc-57fa-47a3-8dbc-f25138e91d4d}">
+      <Declaration><![CDATA[// Deactivates safety mode
+METHOD PUBLIC SafetyDeactivate : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[SafetyDeactivate := LaudaHelper.AddSuffix(
+	sData := CONCAT(STR1 := LaudaHelper.Commands.Write.Safety.ActivateSafetyMode, STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetPumpStage" Id="{d2184a66-6d83-40bc-9695-460b53975188}">
+      <Declaration><![CDATA[// Sets pump stage, 1-6/9, depending on device specification
+METHOD PUBLIC SetPumpStage : T_MaxString
+VAR_INPUT
+	nStage	: UINT;
+END_VAR
+
+VAR
+	nPumpStageWithLimits	: UINT;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[IF nStage > 1 THEN
+	nPumpStageWithLimits := 1;
+ELSIF nStage > 6 THEN
+	nPumpStageWithLimits := 6;
+ELSE
+	nPumpStageWithLimits := nStage;
+END_IF
+
+SetPumpStage := LaudaHelper.AddSuffix(sData := Tc2_Standard.CONCAT(
+		STR1 := LaudaHelper.Commands.Write.Pump.Stage, 
+		STR2 := UINT_TO_STRING(nPumpStageWithLimits)));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetTemperature" Id="{0f019185-742f-4ba3-b819-206118ea4ac4}">
+      <Declaration><![CDATA[// Creates the command for temperature setting.
+METHOD PUBLIC SetTemperature : T_maxstring
+VAR_INPUT
+	fTemperature	: REAL;	// Temperature setpoint to be set on the device.
+END_VAR
+
+VAR_INST
+	errorID	: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_formatString(
+	sFormat := CONCAT(LaudaHelper.Commands.Write.Temperature.TemperatureSet, '%06.2f'),
+	arg1 := Tc2_Utilities.F_REAL(in := fTemperature),
+	nErrId => errorID);
+
+SetTemperature := LaudaHelper.AddSuffix(_formatString.sOut);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Start" Id="{c458b27d-3b69-42ad-8c3d-f34de605982a}">
+      <Declaration><![CDATA[// Starts the device
+METHOD PUBLIC Start : T_MaxString
+
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Start := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Start);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Stop" Id="{f4c6156a-cf0a-4c24-acdb-a7bdee7f732a}">
+      <Declaration><![CDATA[// Stops the device
+METHOD PUBLIC Stop : T_MaxString
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Start := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Stop);]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>

@@ -6,6 +6,8 @@ FUNCTION_BLOCK FB_LaudaPro_P20
 
 VAR_INPUT
 	fTemperatureSet	: REAL;	// Temperature setpoint
+	bSafetyOk		: BOOL;	// Safety mode actiation when FALSE
+	bEnable			: BOOL;
 END_VAR
 
 VAR_OUTPUT
@@ -20,15 +22,17 @@ VAR
 	stCommParameters	: ST_LaudaCommParameters;	
 	TonReadCycleTimer	: Tc2_Standard.TON;
 	fPrevTemperatureSet	: REAL;
-	fbLaudaHelper	: FB_LaudaHelper;
 	sResponse			: Tc2_System.T_MaxString;
 	bSendFlag			: BOOL;
 	bReadFlag			: BOOL;
 	TonReconnectTimer	: Tc2_Standard.TON;
+	bFirstExecution		: BOOL := TRUE;
+	arrCommandBuffer	: ARRAY[0..100] OF ST_LaudaPendingCommand;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[TonReconnectTimer(IN := NOT TonReconnectTimer.Q, pt := T#500MS);
+      <ST><![CDATA[TonReconnectTimer(IN := NOT TonReconnectTimer.Q, pt := stCommParameters.ReconnectPeriod);
+
 // Set reconnect period
 fbTcpIpControl.ReconnectPeriod := stCommParameters.ReconnectPeriod;
 fbTcpIpControl();
@@ -37,28 +41,30 @@ fbTcpIpControl();
 IF fbTcpIpControl.Error AND NOT TonReconnectTimer.Q THEN
 	fbTcpIpControl.Disconnect();
 ELSIF fbTcpIpControl.IsConnected = FALSE THEN
-	fbTcpIpControl.Connect(
-		Ipv4Address := stCommParameters.Ipv4Address, 
-		Port := stCommParameters.Port);
+	fbTcpIpControl.Connect(Ipv4Address := stCommParameters.Ipv4Address, Port := stCommParameters.Port);
 END_IF
 
 // Send teperature only on change
-IF fPrevTemperatureSet <> fTemperatureSet THEN
+IF fPrevTemperatureSet <> fTemperatureSet OR bFirstExecution THEN
+	{warning 'NAdaljuj z implementacijo bufferja!'}
+	EnqueueCommand(
+		sCommand := LaudaHelper.Commands.Write.Temperature.TemperatureSet, 
+		fValue := fTemperatureSet);
+		
 	bSendFlag := TRUE;
 END_IF
 
 IF bSendFlag AND NOT bReadFlag THEN
 	IF fbTcpIpControl.SendAscii(
-		sCommand := fbLaudaHelper.SetTemperature(fTemperature := fTemperatureSet), 
+		sCommand := LaudaHelper.GenerateComand().SetTemperature(fTemperature := fTemperatureSet), 
 		refResponse := sResponse)
 	THEN
 		bSendFlag := FALSE;
-		bError := NOT fbLaudaHelper.ValidateSendCommandResponse(sResponse := sResponse);
+		bError := NOT LaudaHelper.ValidateSendCommandResponse(sResponse := sResponse);
 	END_IF
 END_IF
 
 fPrevTemperatureSet := fTemperatureSet;
-
 
 // Cyclic reading of values
 TonReadCycleTimer(IN := NOT TonReadCycleTimer.Q AND NOT bSendFlag, PT := stCommParameters.ReadCycle);
@@ -66,9 +72,10 @@ IF TonReadCycleTimer.Q THEN
 	bReadFlag := TRUE;
 END_IF
 
-ReadParameters();
+THIS^.ReadParameters();
 
-bConnected := fbTcpIpControl.IsConnected;]]></ST>
+bConnected := fbTcpIpControl.IsConnected;
+bFirstExecution := FALSE;]]></ST>
     </Implementation>
     <Property Name="CommParameters" Id="{c3e16bc9-a4cc-4b05-9799-55162badeedb}">
       <Declaration><![CDATA[// Gets or sets various communication specific parameters
@@ -90,6 +97,27 @@ END_VAR
         </Implementation>
       </Set>
     </Property>
+    <Method Name="EnqueueCommand" Id="{f7fdbf6b-2e52-42d8-8058-3875706d9c35}">
+      <Declaration><![CDATA[METHOD PRIVATE EnqueueCommand
+VAR_INPUT
+	sCommand	: Tc2_System.T_MaxString;
+	fValue		: REAL;
+END_VAR
+
+VAR
+	i	: UINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[FOR i := 0 TO 100 BY 1 DO
+	// If finding an empty command in queue or a new value, enter it here
+	IF arrCommandBuffer[i].Command = '' OR arrCommandBuffer[i].Command = sCommand THEN
+		arrCommandBuffer[i].Command := sCommand;
+		arrCommandBuffer[i].Value := fValue;
+		EXIT;
+	END_IF
+END_FOR]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="ReadParameters" Id="{8262ebc3-39d0-44ea-bb24-a1d54526e1a7}">
       <Declaration><![CDATA[METHOD PRIVATE ReadParameters
 VAR_INST
@@ -104,16 +132,22 @@ END_VAR]]></Declaration>
 		END_IF
 		
 	E_LaudaParameterReadState.BAH_OUTFLOW_TEMP:
-		IF fbTcpIpControl.SendAscii(sCommand := CONCAT(fbLaudaHelper.Commands.Read.Temperature.BathTemperatureOutflow_001C, '$R$N'), refResponse := sReadResponseString) THEN
-			bError := bError OR NOT fbLaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString);
-			fBathOutflowTemperature := STRING_TO_REAL(fbLaudaHelper.RemoveSuffix(sReadResponseString));
+		IF fbTcpIpControl.SendAscii(
+			sCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Temperature.BathTemperatureOutflow_001C), 
+			refResponse := sReadResponseString) 
+		THEN
+			bError := bError OR NOT LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString);
+			fBathOutflowTemperature := STRING_TO_REAL(LaudaHelper.RemoveSuffix(sReadResponseString));
 			eReadParametersStep := E_LaudaParameterReadState.ACTUAL_TEMPERATURE_SETPOINT;
 		END_IF
 		
 	E_LaudaParameterReadState.ACTUAL_TEMPERATURE_SETPOINT:
-		IF fbTcpIpControl.SendAscii(sCommand := fbLaudaHelper.AddSuffix(fbLaudaHelper.Commands.Read.Temperature.TemperatureSetpoint), refResponse := sReadResponseString) THEN
-			bError := bError OR NOT fbLaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString);
-			fTemperatureSetpoint_Actual := STRING_TO_REAL(fbLaudaHelper.RemoveSuffix(sReadResponseString));
+		IF fbTcpIpControl.SendAscii(
+				sCommand := LaudaHelper.AddSuffix(LaudaHelper.Commands.Read.Temperature.TemperatureSetpoint), 
+				refResponse := sReadResponseString) 
+		THEN
+			bError := bError OR NOT LaudaHelper.ValidateReadCommandResponse(sResponse := sReadResponseString);
+			fTemperatureSetpoint_Actual := STRING_TO_REAL(LaudaHelper.RemoveSuffix(sReadResponseString));
 			eReadParametersStep := E_LaudaParameterReadState.DONE;
 		END_IF
 	
