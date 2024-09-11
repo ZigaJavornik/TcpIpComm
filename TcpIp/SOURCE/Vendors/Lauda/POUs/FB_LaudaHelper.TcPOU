@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="FB_LaudaHelper" Id="{5fffc554-b07e-438f-af97-67f733935800}" SpecialFunc="None">
+    <Declaration><![CDATA[// Provides various helper methods for easier communication with Lauda Pro device.
+FUNCTION_BLOCK FB_LaudaHelper
+VAR
+	_formatString	: FB_FormatString;
+END_VAR
+
+VAR CONSTANT
+	COMMAND_SUFFIX				: STRING := '$R$L';
+	SEND_COMMAND_RESPONSE_OK	: STRING := 'OK';
+	READ_COMMAND_RESPONSE_NOK	: STRING := 'ERR_'; 
+	
+END_VAR
+
+VAR
+	{attribute 'hide'} 
+	_commands					: ST_LaudaCommands := ();
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Method Name="AddSuffix" Id="{d4bcf624-88d7-4467-b087-94298f8a0749}">
+      <Declaration><![CDATA[// Adds suffix to the data command.
+METHOD PUBLIC AddSuffix : Tc2_System.T_MaxString
+VAR_INPUT
+	sData	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[AddSuffix := Tc2_Standard.CONCAT(STR1 := sData, STR2 := COMMAND_SUFFIX);]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Commands" Id="{65a9f776-50a4-44f7-8fc7-0db51db49164}">
+      <Declaration><![CDATA[PROPERTY Commands : REFERENCE TO ST_LaudaCommands]]></Declaration>
+      <Get Name="Get" Id="{c092e279-faa9-4839-8226-b43a91eeeedf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Commands ref= _commands;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="RemoveSuffix" Id="{d1c560ff-3c52-4ccd-ac70-705a364f61ec}">
+      <Declaration><![CDATA[// Removes suffix from the provided data string
+METHOD PUBLIC RemoveSuffix : Tc2_System.T_MaxString
+VAR_INPUT
+	sData	: Tc2_System.T_MaxString;
+END_VAR
+
+VAR
+	sDataWithoutSuffix	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[Tc2_Utilities.FindAndDelete(
+	pDstString := ADR(sDataWithoutSuffix),
+	nDstSize := SIZEOF(sDataWithoutSuffix),
+	pDeleteString := ADR(COMMAND_SUFFIX),
+	pSrcString := ADR(sData));
+	
+RemoveSuffix := sDataWithoutSuffix;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="SetTemperature" Id="{0f019185-742f-4ba3-b819-206118ea4ac4}">
+      <Declaration><![CDATA[// Creates the command for temperature setting.
+METHOD PUBLIC SetTemperature : T_maxstring
+VAR_INPUT
+	fTemperature	: REAL;
+END_VAR
+
+VAR_INST
+	errorID	: UDINT;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_formatString(
+	sFormat := CONCAT(Commands.Write.Temperature.TemperatureSet, '%06.2f'),
+	arg1 := Tc2_Utilities.F_REAL(in := fTemperature),
+	nErrId => errorID);
+	
+
+SetTemperature := AddSuffix(_formatString.sOut);]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateReadCommandResponse" Id="{3e9bb6f0-4f52-45f6-be32-87d90659a4b4}">
+      <Declaration><![CDATA[// Validates the response when doing a read command to Lauda Pro Thermostat.
+// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.
+METHOD PUBLIC ValidateReadCommandResponse : BOOL
+VAR_INPUT
+	sResponse	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateReadCommandResponse := 
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := READ_COMMAND_RESPONSE_NOK) = 0 AND
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_SUFFIX) <> 0;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ValidateSendCommandResponse" Id="{d421eeb7-a47e-4746-822d-a5ed71f341b1}">
+      <Declaration><![CDATA[// Validates the response when doing a write command to Lauda Pro Thermostat.
+// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.METHOD PUBLIC ValidateSendCommandResponse : BOOL
+METHOD PUBLIC ValidateSendCommandResponse : BOOL
+VAR_INPUT
+	sResponse	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[ValidateSendCommandResponse := 
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := SEND_COMMAND_RESPONSE_OK) <> 0 AND
+	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_SUFFIX) <> 0;]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
