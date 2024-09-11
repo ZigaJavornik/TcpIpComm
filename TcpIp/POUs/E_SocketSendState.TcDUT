@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <DUT Name="E_SocketSendState" Id="{9fd162bf-4b85-4e67-b08a-b3574aa9ed3d}">
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE E_SocketSendState :
+(
+	READY,
+	PREPARE_DATA,
+	SENDING,
+	AWAIT_RESPONSE,
+	DONE,
+	ERROR
+);
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

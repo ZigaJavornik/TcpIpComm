@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="MAIN" Id="{d83743e1-6877-4583-a383-fad2f5f2df12}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	fTempSet	: REAL;	
+	fbLaudaPro_P20	: FB_LaudaPro_P20;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[fbLaudaPro_P20.CommParameters.Ipv4Address := '192.168.0.3';
+fbLaudaPro_P20.CommParameters.Port := 54321;
+fbLaudaPro_P20.CommParameters.ReadCycle := T#500MS;
+
+fbLaudaPro_P20(fTemperatureSet := fTempSet);]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
