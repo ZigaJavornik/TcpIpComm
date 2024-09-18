@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_TcpIpCommControl" Id="{fd79d544-45d1-463d-8e94-298cab5b93fb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TcpIpCommControl
 
@@ -69,6 +69,22 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
+    <Method Name="Read" Id="{3cf339fe-d3bf-0523-1dff-a9d13aa44b43}">
+      <Declaration><![CDATA[METHOD PUBLIC Read : BOOL
+VAR_INPUT
+	refResponse	: REFERENCE TO Tc2_System.T_MaxString;
+END_VAR]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_socketReceive(
+	bExecute := NOT _socketReceive.bBusy,
+	hSocket := _clientServerControl.hSocket,
+	cbLen := SIZEOF(refResponse),
+	sSrvNetId := '',
+	pDest := ADR(refResponse));
+	
+Read := NOT _socketReceive.bBusy;]]></ST>
+      </Implementation>
+    </Method>
     <Property Name="ReconnectPeriod" Id="{aad75e38-b8e4-4d9a-9646-b55bad013266}">
       <Declaration><![CDATA[(* Gets or sets the reconnect period. 
 The value should not be set too low, since timeout periods of > 30 s may occur in the event of a network interruption. 
@@ -108,6 +124,7 @@ VAR_INST
 	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
 	nSendDataCount		: UDINT;
 	response	: Tc2_System.T_MaxString;
+	TonDelay	: TON := (PT := T#100MS);
 END_VAR
 ]]></Declaration>
       <Implementation>
@@ -151,14 +168,18 @@ END_VAR
 		IF _socketSend.bError THEN 
 			state := E_SocketSendState.ERROR;
 		ELSIF _socketSend.bBusy = FALSE THEN
-			state := E_SocketSendState.AWAIT_RESPONSE;
-			_socketReceive(bExecute := FALSE);
-			_socketReceive(
-				bExecute := TRUE,
-				hSocket := _clientServerControl.hSocket,
-				cbLen := SIZEOF(response),
-				pDest := ADR(response),
-				tTimeout := T#5S);
+			TonDelay(IN := TRUE);
+			IF TonDelay.Q THEN
+				TonDelay(IN := FALSE);
+				state := E_SocketSendState.AWAIT_RESPONSE;
+				_socketReceive(bExecute := FALSE);
+				_socketReceive(
+					bExecute := TRUE,
+					hSocket := _clientServerControl.hSocket,
+					cbLen := SIZEOF(response),
+					pDest := ADR(response),
+					tTimeout := T#5S);
+			END_IF
 		END_IF
 		
 	E_SocketSendState.AWAIT_RESPONSE:

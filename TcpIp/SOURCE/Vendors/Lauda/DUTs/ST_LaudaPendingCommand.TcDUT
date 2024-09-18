@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <DUT Name="ST_LaudaPendingCommand" Id="{76f478e6-3281-437b-8fdc-ae63251578dd}">
     <Declaration><![CDATA[TYPE ST_LaudaPendingCommand :
 STRUCT

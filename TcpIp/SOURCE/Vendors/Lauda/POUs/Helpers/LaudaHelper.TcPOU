@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="LaudaHelper" Id="{5fffc554-b07e-438f-af97-67f733935800}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'hide_all_locals'}
 
@@ -91,7 +91,7 @@ END_VAR
     </Method>
     <Method Name="ValidateSendCommandResponse" Id="{d421eeb7-a47e-4746-822d-a5ed71f341b1}">
       <Declaration><![CDATA[// Validates the response when doing a write command to Lauda Pro Thermostat.
-// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.METHOD PUBLIC ValidateSendCommandResponse : BOOL
+// Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported
 METHOD PUBLIC ValidateSendCommandResponse : BOOL
 VAR_INPUT
 	sResponse	: Tc2_System.T_MaxString;

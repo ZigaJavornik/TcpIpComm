@@ -16,6 +16,65 @@
     <Implicit_KindOfTask>{ce27bb5b-e676-4285-a8cc-ff94711ccf6a}</Implicit_KindOfTask>
     <Implicit_Jitter_Distribution>{423afe48-af5a-4a9b-a8ab-a8bd3d0e2080}</Implicit_Jitter_Distribution>
     <LibraryReferences>{5d53bffc-612d-4611-9dda-1255461c64bf}</LibraryReferences>
+    <Company>Blubit</Company>
+    <Released>false</Released>
+    <Title>TcpIp</Title>
+    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <LibraryCategories>
+      <LibraryCategory xmlns="">
+        <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        <Version>1.0.0.0</Version>
+        <DefaultName>Blubit</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{ed873140-39df-4011-9311-1d51ee4fa323}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Comm</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{e42e9899-3114-40a3-911f-5f44e2769932}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Motion</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{6772c8f5-6c15-4a3e-82b7-31dcf41d564a}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Logging</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{63c340b8-a091-4abf-879f-cde11cf04507}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>Utilities</DefaultName>
+      </LibraryCategory>
+      <LibraryCategory xmlns="">
+        <Id>{43e79bfc-7886-47b8-b15a-5452392fa3ff}</Id>
+        <Version>1.0.0.0</Version>
+        <ParentCategory>
+          <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
+        </ParentCategory>
+        <DefaultName>IO</DefaultName>
+      </LibraryCategory>
+    </LibraryCategories>
+    <SelectedLibraryCategories>
+      <Id xmlns="">{ed873140-39df-4011-9311-1d51ee4fa323}</Id>
+    </SelectedLibraryCategories>
+    <DefaultNamespace>BB_TcpIp</DefaultNamespace>
+    <Placeholder>BB_TcpIp</Placeholder>
+    <Author>Žiga Javornik</Author>
+    <Description>TcpIp and vendors implementing the procol library collection</Description>
+    <CombineIds>true</CombineIds>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="PlcTask.TcTTO">
@@ -105,10 +164,16 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaPendingCommand.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaCommandGenerator.TcPOU">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaActualValuesCollection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\POUs\LaudaHelper.TcPOU">
+    <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaResponse.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\FB_LaudaCommandGenerator.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\LaudaHelper.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaPro_P20.TcPOU">
@@ -130,6 +195,7 @@
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write" />
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write\Command groups" />
     <Folder Include="SOURCE\Vendors\Lauda\POUs" />
+    <Folder Include="SOURCE\Vendors\Lauda\POUs\Helpers" />
     <Folder Include="VISUs" />
     <Folder Include="SOURCE" />
   </ItemGroup>
@@ -141,92 +207,14 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_UPPER_BOUND</Key>
-          <Value>15</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_EXP</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_ADDRESS</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_COMMENT</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>STRING_LENGTH_OUTSTRING</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TABLE_SHOW_VALID_ITEMS</Key>
-          <Value>FALSE</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_TcpIp">
       <DefaultResolution>Tc2_TcpIp, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_TcpIp</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_MAXUDP_BUFFSIZE</Key>
-          <Value>16#2000</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_TLS_HOSTNAME_SIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_TLS_CERTIFICATE_PATH_SIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_TLS_KEY_PASSWORD_SIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_TLS_PSK_IDENTITY_SIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-        <Parameter ListName="PARAM" xmlns="">
-          <Key>TCPADS_TLS_MAX_PSK_KEY_SIZE</Key>
-          <Value>128</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
-      <Parameters>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSES</Key>
-          <Value>50</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXLICENSEDEVICES</Key>
-          <Value>16</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXCPUCOUNT</Key>
-          <Value>64</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCHARACTERS</Key>
-          <Value>16#FFFFFFF0</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>NMAXFILESONDONGLE</Key>
-          <Value>20</Value>
-        </Parameter>
-        <Parameter ListName="PARAMETERLIST" xmlns="">
-          <Key>CMAXCSVFIELDVALUESIZE</Key>
-          <Value>255</Value>
-        </Parameter>
-      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
@@ -241,8 +229,8 @@
   <ProjectExtensions>
     <PlcProjectOptions>
       <XmlArchive>
-  <Data>
-    <o xml:space="preserve" t="OptionKey">
+        <Data>
+          <o xml:space="preserve" t="OptionKey">
       <v n="Name">"&lt;ProjectRoot&gt;"</v>
       <d n="SubKeys" t="Hashtable" ckt="String" cvt="OptionKey">
         <v>{192FAD59-8248-4824-A8DE-9177C94C195A}</v>
@@ -285,13 +273,13 @@
       </d>
       <d n="Values" t="Hashtable" />
     </o>
-  </Data>
-  <TypeList>
-    <Type n="Hashtable">System.Collections.Hashtable</Type>
-    <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
-    <Type n="String">System.String</Type>
-  </TypeList>
-</XmlArchive>
+        </Data>
+        <TypeList>
+          <Type n="Hashtable">System.Collections.Hashtable</Type>
+          <Type n="OptionKey">{54dd0eac-a6d8-46f2-8c27-2f43c7e49861}</Type>
+          <Type n="String">System.String</Type>
+        </TypeList>
+      </XmlArchive>
     </PlcProjectOptions>
   </ProjectExtensions>
 </Project>

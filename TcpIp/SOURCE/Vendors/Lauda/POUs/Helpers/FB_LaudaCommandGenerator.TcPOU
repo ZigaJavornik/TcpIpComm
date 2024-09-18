@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
   <POU Name="FB_LaudaCommandGenerator" Id="{cbcd6d20-910e-47bc-b6f3-8dab272208fe}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaCommandGenerator
 VAR_INPUT
@@ -47,10 +47,10 @@ VAR
 END_VAR
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[IF nStage > 1 THEN
+        <ST><![CDATA[IF nStage < 1 THEN
 	nPumpStageWithLimits := 1;
-ELSIF nStage > 6 THEN
-	nPumpStageWithLimits := 6;
+ELSIF nStage > 8 THEN
+	nPumpStageWithLimits := 8;
 ELSE
 	nPumpStageWithLimits := nStage;
 END_IF
@@ -93,7 +93,7 @@ METHOD PUBLIC Start : T_MaxString
 METHOD PUBLIC Stop : T_MaxString
 ]]></Declaration>
       <Implementation>
-        <ST><![CDATA[Start := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Stop);]]></ST>
+        <ST><![CDATA[Stop := LaudaHelper.AddSuffix(sData := LaudaHelper.Commands.Write.Status.Stop);]]></ST>
       </Implementation>
     </Method>
   </POU>

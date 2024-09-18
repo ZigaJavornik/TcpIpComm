@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="FB_LaudaResponse" Id="{35f8e709-f468-0b47-138a-bcaf5861f7b3}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK FB_LaudaResponse
+VAR_INPUT
+	sResponse	: Tc2_System.T_MaxString;
+END_VAR
+VAR_OUTPUT
+END_VAR
+VAR
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[]]></ST>
+    </Implementation>
+    <Property Name="RawValue" Id="{83553254-5c35-0f94-3c3d-643eb9abc761}">
+      <Declaration><![CDATA[PROPERTY PUBLIC RawValue : T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{f6c1035a-83f6-0315-27aa-65c620878c7a}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[RawValue := sResponse;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="Success" Id="{8504984e-2e04-02a7-3338-8921ffa3e826}">
+      <Declaration><![CDATA[PROPERTY PUBLIC Success : BOOL]]></Declaration>
+      <Get Name="Get" Id="{2e981743-ad83-0198-2b09-8d166c464498}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Success := 
+	LaudaHelper.ValidateReadCommandResponse(sResponse) AND 
+	LaudaHelper.ValidateSendCommandResponse(sResponse);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Property Name="WithoutSuffix" Id="{5db934a5-bf0e-0460-0850-ac7dc3d38e78}">
+      <Declaration><![CDATA[PROPERTY PUBLIC WithoutSuffix : T_MaxString]]></Declaration>
+      <Get Name="Get" Id="{f56c6fe2-fca1-0d67-02b1-fe7db726cfdf}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[WithoutSuffix := LaudaHelper.RemoveSuffix(sResponse);]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+  </POU>
+</TcPlcObject>
