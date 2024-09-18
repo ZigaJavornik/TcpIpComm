@@ -40,6 +40,7 @@ VAR
 	eReadParametersStep	: E_LaudaParameterReadState;
 	sReadResponseString	: Tc2_System.T_MaxString;
 	laudaResponse		: FB_LaudaResponse;
+	stActualValues		: ST_LaudaActualValuesCollection;
 END_VAR
 ]]></Declaration>
     <Implementation>
