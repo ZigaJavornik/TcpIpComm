@@ -1,17 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <DUT Name="ST_LaudaActualValuesCollection" Id="{9d4a1ed1-cd3c-0e37-06cb-e1dfd2a22cbd}">
+  <DUT Name="ST_LaudaReadWriteError" Id="{78ed41a8-ae88-03f3-1bee-690a8c409507}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE ST_LaudaActualValuesCollection :
+TYPE ST_LaudaReadWriteError :
 STRUCT
-	BathTemperature		: REAL;
-	TemperatureSetpoint	: REAL;
-	PumpStage			: UINT;
-	StandBy				: BOOL;
-	LiquidLevel			: UINT;
+	SendCommand			: STRING(100);
+	ResponseErrorInfo	: STRING(100);
 END_STRUCT
 END_TYPE
+
 ]]></Declaration>
   </DUT>
 </TcPlcObject>

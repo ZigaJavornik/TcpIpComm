@@ -86,6 +86,12 @@
     <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaFaults.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaResponseErrors.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_LaudaParameterReadState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -170,7 +176,7 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaActualValuesCollection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_TcpSendReceivePair.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaReadWriteError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\FB_LaudaCommandGenerator.TcPOU">
@@ -197,6 +203,7 @@
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Read\Command groups" />
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write" />
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write\Command groups" />
+    <Folder Include="SOURCE\Vendors\Lauda\DUTs\Errors" />
     <Folder Include="SOURCE\Vendors\Lauda\POUs" />
     <Folder Include="SOURCE\Vendors\Lauda\POUs\Helpers" />
     <Folder Include="VISUs" />

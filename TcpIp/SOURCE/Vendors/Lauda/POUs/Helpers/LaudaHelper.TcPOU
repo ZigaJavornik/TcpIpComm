@@ -10,6 +10,7 @@ VAR
 	_formatString			: FB_FormatString;
 	_laudaCommandGenerator	: FB_LaudaCommandGenerator;	
 	_commands				: ST_LaudaCommands;
+	_responseErrors			: ST_LaudaResponseErrors;
 END_VAR
 
 VAR CONSTANT
@@ -62,6 +63,177 @@ END_VAR
         <ST><![CDATA[GenerateComand ref= _laudaCommandGenerator;]]></ST>
       </Implementation>
     </Method>
+    <Method Name="ParseLaudaFaultDiagnosis" Id="{64cf5f40-1c34-0b5e-36fb-99ee19b87059}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Parses the RAW data response for fault diagnosis and returns the faults structure.
+METHOD ParseLaudaFaultDiagnosis : ST_LaudaFaults
+VAR_INPUT
+	sDiagnosisResposne	: Tc2_System.T_MaxString;
+END_VAR
+VAR
+	sTmp		: Tc2_System.T_MaxString;
+	nResponse	: BYTE;
+	stFaults	: ST_LaudaFaults;
+END_VAR
+
+(*
+
+*)
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[sTmp := THIS^.RemoveSuffix(sData := sDiagnosisResposne);
+stFaults.Error := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 1, 
+	LEN := 1));
+
+stFaults.Alarm := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 2, 
+	LEN := 1));
+	
+stFaults.Warning := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 3, 
+	LEN := 1));
+	
+stFaults.Overtemp := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 4, 
+	LEN := 1));
+	
+stFaults.Sublevel := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 5, 
+	LEN := 1));
+	
+stFaults.HigherLevel := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 6, 
+	LEN := 1));
+	
+stFaults.ExternalControlValueMissing := STRING_TO_BOOL(Tc2_Standard.MID(
+	STR := sTmp,
+	POS := 7, 
+	LEN := 1));
+	
+ParseLaudaFaultDiagnosis := stFaults;]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="ParseResponseError" Id="{219d1fb5-841d-09ea-0930-e6a31641b88a}" FolderPath="Public\Methods\">
+      <Declaration><![CDATA[// Parses the error and returns the error message for further diagnosis
+METHOD PUBLIC ParseResponseError : STRING
+VAR_INPUT
+	Response	: Tc2_System.T_MaxString;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[// Search the errors from highest to lowest to avoid case such as ERR_30 and you find it with ERR_3
+// If success, return
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantActivateFromSafetyMode) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.CantActivateFromSafetyMode);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantStartProgrammer_AnalogSetpointIsUsed) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.CantStartProgrammer_AnalogSetpointIsUsed);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.CantSetValue_ProgrammerRunningOrPaused) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.CantSetValue_ProgrammerRunningOrPaused);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SafetyModeCantBeStarted_ItIsNotEnabled) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.SafetyModeCantBeStarted_ItIsNotEnabled);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.AnalogValueNotPresent) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.AnalogValueNotPresent);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ExternalTemperatureProbeMissing) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.ExternalTemperatureProbeMissing);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SetpointNotPossible_AnalogSetpointIsUsed) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.SetpointNotPossible_AnalogSetpointIsUsed);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.AllSegmentsInTheProgrammerAreOccupied) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.AllSegmentsInTheProgrammerAreOccupied);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ModuleOrValueNotAvailable) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.ModuleOrValueNotAvailable);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.ImpermissableValue) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.ImpermissableValue);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.SyntaxError) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.SyntaxError);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.WrongCommand) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.WrongCommand);
+	RETURN;
+END_IF
+
+IF Tc2_Standard.FIND(
+	STR1 := Response, 
+	STR2 := ResponseErrors.WrongEntry) <> 0 
+THEN
+	ParseResponseError := TO_STRING(ResponseErrors.WrongEntry);
+	RETURN;
+END_IF]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="RemoveSuffix" Id="{d1c560ff-3c52-4ccd-ac70-705a364f61ec}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Removes suffix from the provided data string
 METHOD PUBLIC RemoveSuffix : Tc2_System.T_MaxString
@@ -83,6 +255,17 @@ END_VAR
 RemoveSuffix := sDataWithoutSuffix;]]></ST>
       </Implementation>
     </Method>
+    <Property Name="ResponseErrors" Id="{8315cf31-fb9b-0095-268a-a94f9e3e1fbd}" FolderPath="Public\Properties\">
+      <Declaration><![CDATA[PROPERTY ResponseErrors : REFERENCE TO ST_LaudaResponseErrors]]></Declaration>
+      <Get Name="Get" Id="{68aed051-4df7-0ae8-3cca-222a8df86581}">
+        <Declaration><![CDATA[VAR
+END_VAR
+]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[ResponseErrors ref= _responseErrors;]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
     <Method Name="ValidateReadCommandResponse" Id="{3e9bb6f0-4f52-45f6-be32-87d90659a4b4}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Validates the response when doing a read command to Lauda Pro Thermostat.
 // Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.

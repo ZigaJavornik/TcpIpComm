@@ -1,7 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <DUT Name="ST_LaudaPendingCommand" Id="{76f478e6-3281-437b-8fdc-ae63251578dd}">
-    <Declaration><![CDATA[TYPE ST_LaudaPendingCommand :
+    <Declaration><![CDATA[{attribute 'qualified_only'}
+{attribute 'strict'}
+TYPE ST_LaudaPendingCommand :
 STRUCT
 	Command		: Tc2_System.T_MaxString;	// Command to be send
 	Value		: REAL ;	// If command has parameters, set them here. Conversion is done internally

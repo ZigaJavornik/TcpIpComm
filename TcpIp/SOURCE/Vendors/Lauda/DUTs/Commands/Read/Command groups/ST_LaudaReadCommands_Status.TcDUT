@@ -7,7 +7,6 @@ STRUCT
 	DeviceType		: STRING := 'TYPE';
 	DeviceStatus	: STRING := 'STATUS';
 	FaultDiagnosis	: STRING := 'STAT';
-	
 END_STRUCT
 END_TYPE
 ]]></Declaration>
