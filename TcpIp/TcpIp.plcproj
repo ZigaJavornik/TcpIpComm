@@ -19,7 +19,7 @@
     <Company>Blubit</Company>
     <Released>false</Released>
     <Title>TcpIp</Title>
-    <ProjectVersion>0.0.1.0</ProjectVersion>
+    <ProjectVersion>0.0.1.1</ProjectVersion>
     <LibraryCategories>
       <LibraryCategory xmlns="">
         <Id>{4c30be10-0c29-4796-921e-62ecfda40191}</Id>
@@ -77,16 +77,13 @@
     <CombineIds>true</CombineIds>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="PlcTask.TcTTO">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\TcpIp\DUTs\E_SocketSendState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
+    <Compile Include="SOURCE\TcpIp\DUTs\E_SocketReceiveState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\MAIN.TcPOU">
+    <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_LaudaParameterReadState.TcDUT">
@@ -158,6 +155,12 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write\ST_LaudaWriteCommands.TcDUT">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_LaudaParameterWriteState.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_ReadWriteStep.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaCommParameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -165,6 +168,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaActualValuesCollection.TcDUT">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_TcpSendReceivePair.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\FB_LaudaCommandGenerator.TcPOU">
@@ -204,14 +210,92 @@
     <PlaceholderReference Include="Tc2_System">
       <DefaultResolution>Tc2_System, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_System</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_UPPER_BOUND</Key>
+          <Value>15</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_EXP</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_ADDRESS</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_COMMENT</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>STRING_LENGTH_OUTSTRING</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TABLE_SHOW_VALID_ITEMS</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_TcpIp">
       <DefaultResolution>Tc2_TcpIp, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_TcpIp</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_MAXUDP_BUFFSIZE</Key>
+          <Value>16#2000</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_HOSTNAME_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_CERTIFICATE_PATH_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_KEY_PASSWORD_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_PSK_IDENTITY_SIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+        <Parameter ListName="PARAM" xmlns="">
+          <Key>TCPADS_TLS_MAX_PSK_KEY_SIZE</Key>
+          <Value>128</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc2_Utilities">
       <DefaultResolution>Tc2_Utilities, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc2_Utilities</Namespace>
+      <Parameters>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSES</Key>
+          <Value>50</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXLICENSEDEVICES</Key>
+          <Value>16</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXCPUCOUNT</Key>
+          <Value>64</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCHARACTERS</Key>
+          <Value>16#FFFFFFF0</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>NMAXFILESONDONGLE</Key>
+          <Value>20</Value>
+        </Parameter>
+        <Parameter ListName="PARAMETERLIST" xmlns="">
+          <Key>CMAXCSVFIELDVALUESIZE</Key>
+          <Value>255</Value>
+        </Parameter>
+      </Parameters>
     </PlaceholderReference>
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>

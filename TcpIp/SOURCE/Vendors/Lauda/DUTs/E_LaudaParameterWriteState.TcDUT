@@ -1,14 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
-  <DUT Name="E_SocketSendState" Id="{9fd162bf-4b85-4e67-b08a-b3574aa9ed3d}">
+  <DUT Name="E_LaudaParameterWriteState" Id="{2d063000-6fc6-0f7b-368d-d0fc2af3fc45}">
     <Declaration><![CDATA[{attribute 'qualified_only'}
 {attribute 'strict'}
-TYPE E_SocketSendState :
+TYPE E_LaudaParameterWriteState :
 (
 	READY,
-	SENDING,
-	DONE,
-	ERROR
+	SEND,
+	AWAIT_RESPONSE,
+	VALIDATE_RESPONSE,
+	DONE
 );
 END_TYPE
 ]]></Declaration>

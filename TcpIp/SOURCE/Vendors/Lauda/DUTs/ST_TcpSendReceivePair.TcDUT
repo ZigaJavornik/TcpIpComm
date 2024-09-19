@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <DUT Name="ST_TcpSendReceivePair" Id="{78ed41a8-ae88-03f3-1bee-690a8c409507}">
+    <Declaration><![CDATA[TYPE ST_TcpSendReceivePair :
+STRUCT
+	SendCommand	: STRING(100);
+	Response	: STRING(100);
+END_STRUCT
+END_TYPE
+]]></Declaration>
+  </DUT>
+</TcPlcObject>

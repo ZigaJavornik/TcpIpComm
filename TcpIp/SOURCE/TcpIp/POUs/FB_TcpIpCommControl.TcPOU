@@ -1,22 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="FB_TcpIpCommControl" Id="{fd79d544-45d1-463d-8e94-298cab5b93fb}" SpecialFunc="None">
     <Declaration><![CDATA[FUNCTION_BLOCK FB_TcpIpCommControl
 
 VAR
-	_socketCloseAll	: Tc2_TcpIp.FB_SocketCloseAll;
-	_socketReceive	: Tc2_TcpIp.FB_SocketReceive;
-	_socketSend		: Tc2_TcpIp.FB_SocketSend;
-	_error			: BOOL;
-	_isConnected	: BOOL;
+	_socketCloseAll			: Tc2_TcpIp.FB_SocketCloseAll;
+	_error					: BOOL;
+	_errorReceiving			: BOOL;
+	_errorSending			: BOOL;
+	_isConnected			: BOOL;
 	_clientServerControl	: Tc2_TcpIp.FB_ClientServerConnection;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_clientServerControl( nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG);
-_socketCloseAll(bExecute := FALSE, sSrvNetId := '');]]></ST>
+      <ST><![CDATA[_clientServerControl(nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG);
+_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+_error := _errorReceiving OR _errorSending OR _clientServerControl.bError;]]></ST>
     </Implementation>
-    <Method Name="Connect" Id="{e1b034f2-070e-4d08-81cf-cdc063f262be}">
+    <Folder Name="Private" Id="{389f97e3-bf5f-05ae-2f13-705ec15cee9e}">
+      <Folder Name="Methods" Id="{023e6ddb-0836-0e49-2eba-373228fc2b60}" />
+      <Folder Name="Properties" Id="{9bc1c6cc-6e96-0017-210d-74d0b31ccf69}" />
+    </Folder>
+    <Folder Name="Pulic" Id="{c60aecea-d635-088e-04a6-182c42015718}">
+      <Folder Name="Methods" Id="{f6ea767e-2c80-0320-2c50-ca332a25c49d}" />
+      <Folder Name="Properties" Id="{1e73bf64-8442-0699-0f0d-12fc7815d87d}" />
+    </Folder>
+    <Method Name="Connect" Id="{e1b034f2-070e-4d08-81cf-cdc063f262be}" FolderPath="Pulic\Methods\">
       <Declaration><![CDATA[METHOD Connect : BOOL
 VAR_INPUT
 	Ipv4Address	: Tc2_System.T_IPv4Addr;
@@ -35,8 +44,9 @@ END_IF
 ]]></ST>
       </Implementation>
     </Method>
-    <Method Name="Disconnect" Id="{d19beda7-1d0e-4fc3-a093-6322a6422700}">
-      <Declaration><![CDATA[METHOD Disconnect : BOOL]]></Declaration>
+    <Method Name="Disconnect" Id="{d19beda7-1d0e-4fc3-a093-6322a6422700}" FolderPath="Pulic\Methods\">
+      <Declaration><![CDATA[// Disconnects from the server and closes all active socket connections
+METHOD Disconnect : BOOL]]></Declaration>
       <Implementation>
         <ST><![CDATA[_clientServerControl.bEnable := FALSE;
 IF _clientServerControl.hSocket.handle <> 0 THEN
@@ -49,7 +59,7 @@ Disconnect := NOT THIS^.IsConnected;
 ]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Error" Id="{60d8bc34-46e0-454f-8a36-60e55751a023}">
+    <Property Name="Error" Id="{60d8bc34-46e0-454f-8a36-60e55751a023}" FolderPath="Pulic\Properties\">
       <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
 PROPERTY Error : BOOL]]></Declaration>
       <Get Name="Get" Id="{532dae0a-8ce1-4636-9534-c59315d8a95b}">
@@ -57,11 +67,11 @@ PROPERTY Error : BOOL]]></Declaration>
 END_VAR
 ]]></Declaration>
         <Implementation>
-          <ST><![CDATA[Error := _clientServerControl.bError OR (_clientServerControl.eState = Tc2_TcpIp.E_SocketConnectionState.eSOCKET_SUSPENDED and not _clientServerControl.bBusy);]]></ST>
+          <ST><![CDATA[Error := _error;]]></ST>
         </Implementation>
       </Get>
     </Property>
-    <Property Name="IsConnected" Id="{62428a97-7ac1-4a7f-b09f-13dad2b343d4}">
+    <Property Name="IsConnected" Id="{62428a97-7ac1-4a7f-b09f-13dad2b343d4}" FolderPath="Pulic\Properties\">
       <Declaration><![CDATA[{attribute 'monitoring' := 'variable'}
 PROPERTY PUBLIC IsConnected : BOOL]]></Declaration>
       <Get Name="Get" Id="{eb13dccb-aa08-41f0-8bbc-7f030a9f8461}">
@@ -74,23 +84,53 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="Read" Id="{3cf339fe-d3bf-0523-1dff-a9d13aa44b43}">
-      <Declaration><![CDATA[METHOD PUBLIC Read : BOOL
+    <Method Name="Receive" Id="{46f6766c-31cf-4a63-b72d-2ae9231f0715}" FolderPath="Pulic\Methods\">
+      <Declaration><![CDATA[METHOD Receive : BOOL
 VAR_INPUT
 	refResponse	: REFERENCE TO Tc2_System.T_MaxString;
+END_VAR
+VAR_INST
+	sResponse			: Tc2_System.T_MaxString;
+	eSocketReceiveState	: E_SocketReceiveState;
+	fbSocketReceive		: Tc2_TcpIp.FB_SocketReceive;
+	bReceiveError		: BOOL;
 END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[_socketReceive(
-	bExecute := NOT _socketReceive.bBusy,
-	hSocket := _clientServerControl.hSocket,
-	cbLen := SIZEOF(refResponse),
-	sSrvNetId := '',
-	pDest := ADR(refResponse));
+        <ST><![CDATA[CASE eSocketReceiveState OF
+	E_SocketReceiveState.READY:
+		fbSocketReceive(bExecute := FALSE);
+		IF THIS^.IsConnected THEN
+			bReceiveError := FALSE;
+			fbSocketReceive(
+				bExecute := TRUE,
+				cbLen := SIZEOF(refResponse),
+				pDest := ADR(refResponse),
+				sSrvNetId := '',
+				hSocket := _clientServerControl.hSocket);
+			eSocketReceiveState := E_SocketReceiveState.RECEIVING;
+		END_IF
 	
-Read := NOT _socketReceive.bBusy;]]></ST>
+	E_SocketReceiveState.RECEIVING:
+		fbSocketReceive(bExecute := FALSE);
+		IF NOT fbSocketReceive.bError AND_THEN NOT fbSocketReceive.bBusy THEN
+			eSocketReceiveState := E_SocketReceiveState.DONE;
+		ELSIF fbSocketReceive.bError THEN
+			eSocketReceiveState := E_SocketReceiveState.ERROR;	
+		END_IF
+	
+	E_SocketReceiveState.DONE:
+		Receive := TRUE;
+		eSocketReceiveState := E_SocketReceiveState.READY;
+	
+	E_SocketReceiveState.ERROR:
+		bReceiveError := TRUE;
+		eSocketReceiveState := E_SocketReceiveState.DONE;
+END_CASE
+
+_errorReceiving := bReceiveError;]]></ST>
       </Implementation>
     </Method>
-    <Property Name="ReconnectPeriod" Id="{aad75e38-b8e4-4d9a-9646-b55bad013266}">
+    <Property Name="ReconnectPeriod" Id="{aad75e38-b8e4-4d9a-9646-b55bad013266}" FolderPath="Pulic\Properties\">
       <Declaration><![CDATA[(* Gets or sets the reconnect period. 
 The value should not be set too low, since timeout periods of > 30 s may occur in the event of a network interruption. 
 If the value is too low, command execution would be interrupted prematurely, and ADS error code 1861 (timeout elapsed) 
@@ -116,26 +156,22 @@ END_IF
         </Implementation>
       </Set>
     </Property>
-    <Method Name="SendAscii" Id="{ce4f5b3c-a3f8-4f3f-9b3a-39768c4c33f7}">
-      <Declaration><![CDATA[// Sends ASCII data via TCP/IP and returns TRUE when done. Response can be found in the refResponse.
-METHOD SendAscii : BOOL
+    <Method Name="Send" Id="{de956caf-69b4-4090-b195-97973b802f8c}" FolderPath="Pulic\Methods\">
+      <Declaration><![CDATA[METHOD Send : BOOL
 VAR_INPUT
-	sCommand						: Tc2_System.T_MaxString;	// Command to be send
-	refResponse						: REFERENCE TO Tc2_System.T_MaxString;	// Response variable - data is written to this variable
+	sCommand	: Tc2_System.T_MaxString;	// Command to be send
 END_VAR
-
 VAR_INST
-	state				: E_SocketSendState;
+	fbSocketSend		: Tc2_TcpIp.FB_SocketSend;
+	eSsocketSendState	: E_SocketSendState;
 	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
 	nSendDataCount		: UDINT;
-	response	: Tc2_System.T_MaxString;
-	TonDelay	: TON := (PT := T#200MS);
-END_VAR
-]]></Declaration>
+	bSendError			: BOOL;
+END_VAR]]></Declaration>
       <Implementation>
-        <ST><![CDATA[CASE state OF
+        <ST><![CDATA[CASE eSsocketSendState OF
 	E_SocketSendState.READY:
-		_socketReceive(bExecute := FALSE);
+		bSendError := FALSE;
 		IF sCommand <> '' THEN
 			// Clear array for new data
 			Tc2_System.MEMSET(
@@ -148,8 +184,7 @@ END_VAR
 				destAddr := ADR(arrSendDataBytes),
 				n := SIZEOF(sCommand),
 				srcAddr := ADR(sCommand));
-
-			response := '';
+				
 			// Get the data count, no empty bytes
 			nSendDataCount := 0;
 			FOR nSendDataCount := 0 TO SIZEOF(arrSendDataBytes) BY 1 DO
@@ -159,48 +194,34 @@ END_VAR
 			END_FOR
 
 			// Send data
-			_socketSend(
+			fbSocketSend(
 				bExecute := TRUE,
 				cbLen := nSendDataCount,
 				pSrc := ADR(arrSendDataBytes),
 				hSocket := _clientServerControl.hSocket);
 				
-			state := E_SocketSendState.SENDING;
+			eSsocketSendState := E_SocketSendState.SENDING;
 		END_IF
 	
 	E_SocketSendState.SENDING:
-		_socketSend(bExecute := FALSE);
-		IF _socketSend.bError THEN 
-			state := E_SocketSendState.ERROR;
-		ELSIF _socketSend.bBusy = FALSE THEN
-			TonDelay(IN := TRUE);
-			IF TonDelay.Q THEN
-				TonDelay(IN := FALSE);
-				state := E_SocketSendState.AWAIT_RESPONSE;
-				_socketReceive(bExecute := FALSE);
-				_socketReceive(
-					bExecute := TRUE,
-					hSocket := _clientServerControl.hSocket,
-					cbLen := SIZEOF(response),
-					pDest := ADR(response),
-					tTimeout := T#5S);
-			END_IF
+		fbSocketSend(bExecute := FALSE);
+		IF fbSocketSend.bError THEN 
+			eSsocketSendState := E_SocketSendState.ERROR;
+		ELSIF fbSocketSend.bBusy = FALSE THEN
+				eSsocketSendState := E_SocketSendState.DONE;
 		END_IF
 		
-	E_SocketSendState.AWAIT_RESPONSE:
-		_socketReceive(bExecute := FALSE);
-		IF _socketReceive.bError THEN
-			state := E_SocketSendState.ERROR;
-		ELSIF _socketReceive.bBusy = FALSE THEN
-			state := E_SocketSendState.READY;
-			refResponse := response;
-			SendAscii := TRUE;
-		END_IF
-	
+	E_SocketSendState.DONE:
+		Send := TRUE;
+		eSsocketSendState := E_SocketSendState.READY;
+		
 	E_SocketSendState.ERROR:
-		THIS^.Disconnect();
-		state := E_SocketSendState.READY;
-END_CASE]]></ST>
+		bSendError := TRUE;
+		eSsocketSendState := E_SocketSendState.DONE;
+		
+END_CASE
+
+_errorSending := bSendError;]]></ST>
       </Implementation>
     </Method>
   </POU>

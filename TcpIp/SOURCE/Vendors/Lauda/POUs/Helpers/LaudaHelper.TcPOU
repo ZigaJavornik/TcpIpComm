@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
   <POU Name="LaudaHelper" Id="{5fffc554-b07e-438f-af97-67f733935800}" SpecialFunc="None">
     <Declaration><![CDATA[{attribute 'hide_all_locals'}
 
@@ -22,7 +22,15 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
-    <Method Name="AddSuffix" Id="{d4bcf624-88d7-4467-b087-94298f8a0749}">
+    <Folder Name="Private" Id="{59acb52a-a1f4-04aa-044b-a681555ed3f8}">
+      <Folder Name="Methods" Id="{bf389946-fc31-0b77-1bb9-46bf92fb131e}" />
+      <Folder Name="Properties" Id="{3a98f59a-2f84-02b5-1cdc-2988f475f22e}" />
+    </Folder>
+    <Folder Name="Public" Id="{57a9d21d-d9b0-0e4b-2986-08e84353cc9b}">
+      <Folder Name="Methods" Id="{0ce23bb0-1661-0761-0d2d-4d07c6b0f58e}" />
+      <Folder Name="Properties" Id="{03328be8-04a5-05fc-0935-216101a3474d}" />
+    </Folder>
+    <Method Name="AddSuffix" Id="{d4bcf624-88d7-4467-b087-94298f8a0749}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Adds suffix to the data command.
 METHOD PUBLIC AddSuffix : Tc2_System.T_MaxString
 VAR_INPUT
@@ -33,7 +41,7 @@ END_VAR
         <ST><![CDATA[AddSuffix := Tc2_Standard.CONCAT(STR1 := sData, STR2 := COMMAND_SUFFIX);]]></ST>
       </Implementation>
     </Method>
-    <Property Name="Commands" Id="{65a9f776-50a4-44f7-8fc7-0db51db49164}">
+    <Property Name="Commands" Id="{65a9f776-50a4-44f7-8fc7-0db51db49164}" FolderPath="Public\Properties\">
       <Declaration><![CDATA[PROPERTY Commands : REFERENCE TO ST_LaudaCommands]]></Declaration>
       <Get Name="Get" Id="{c092e279-faa9-4839-8226-b43a91eeeedf}">
         <Declaration><![CDATA[VAR
@@ -44,7 +52,7 @@ END_VAR
         </Implementation>
       </Get>
     </Property>
-    <Method Name="GenerateComand" Id="{b42f95e7-375c-495c-9519-e3b2852ad34d}">
+    <Method Name="GenerateComand" Id="{b42f95e7-375c-495c-9519-e3b2852ad34d}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Provides access to command generation methods.
 METHOD PUBLIC GenerateComand : REFERENCE TO FB_LaudaCommandGenerator
 VAR_INPUT
@@ -54,7 +62,7 @@ END_VAR
         <ST><![CDATA[GenerateComand ref= _laudaCommandGenerator;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="RemoveSuffix" Id="{d1c560ff-3c52-4ccd-ac70-705a364f61ec}">
+    <Method Name="RemoveSuffix" Id="{d1c560ff-3c52-4ccd-ac70-705a364f61ec}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Removes suffix from the provided data string
 METHOD PUBLIC RemoveSuffix : Tc2_System.T_MaxString
 VAR_INPUT
@@ -75,7 +83,7 @@ END_VAR
 RemoveSuffix := sDataWithoutSuffix;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ValidateReadCommandResponse" Id="{3e9bb6f0-4f52-45f6-be32-87d90659a4b4}">
+    <Method Name="ValidateReadCommandResponse" Id="{3e9bb6f0-4f52-45f6-be32-87d90659a4b4}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Validates the response when doing a read command to Lauda Pro Thermostat.
 // Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported.
 METHOD PUBLIC ValidateReadCommandResponse : BOOL
@@ -89,7 +97,7 @@ END_VAR
 	Tc2_Standard.FIND(STR1 := sResponse, STR2 := COMMAND_SUFFIX) <> 0;]]></ST>
       </Implementation>
     </Method>
-    <Method Name="ValidateSendCommandResponse" Id="{d421eeb7-a47e-4746-822d-a5ed71f341b1}">
+    <Method Name="ValidateSendCommandResponse" Id="{d421eeb7-a47e-4746-822d-a5ed71f341b1}" FolderPath="Public\Methods\">
       <Declaration><![CDATA[// Validates the response when doing a write command to Lauda Pro Thermostat.
 // Returns TRUE if response is valid, or FALSE if it is not valid or an error was reported
 METHOD PUBLIC ValidateSendCommandResponse : BOOL
