@@ -89,10 +89,10 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaFaults.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaResponseErrors.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaReadWriteError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_LaudaParameterReadState.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaResponseErrors.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\Commands\Read\Command groups\ST_LaudaReadCommands_ActuatingSignal.TcDUT">
@@ -161,22 +161,19 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write\ST_LaudaWriteCommands.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_LaudaParameterWriteState.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Parameters\ST_LaudaActualValuesCollection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\E_ReadWriteStep.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Parameters\ST_LaudaCommParameters.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaCommParameters.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\States\E_LaudaParameterReadState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaPendingCommand.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\States\E_LaudaParameterWriteState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaActualValuesCollection.TcDUT">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaReadWriteError.TcDUT">
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\States\E_ReadWriteStep.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\FB_LaudaCommandGenerator.TcPOU">
@@ -204,6 +201,8 @@
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write" />
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Commands\Write\Command groups" />
     <Folder Include="SOURCE\Vendors\Lauda\DUTs\Errors" />
+    <Folder Include="SOURCE\Vendors\Lauda\DUTs\Parameters" />
+    <Folder Include="SOURCE\Vendors\Lauda\DUTs\States" />
     <Folder Include="SOURCE\Vendors\Lauda\POUs" />
     <Folder Include="SOURCE\Vendors\Lauda\POUs\Helpers" />
     <Folder Include="VISUs" />
