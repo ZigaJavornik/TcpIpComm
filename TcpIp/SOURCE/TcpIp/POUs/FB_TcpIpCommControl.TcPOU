@@ -13,7 +13,8 @@ VAR
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[_clientServerControl( nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG);]]></ST>
+      <ST><![CDATA[_clientServerControl( nMode := Tc2_TcpIp.CONNECT_MODE_ENABLEDBG);
+_socketCloseAll(bExecute := FALSE, sSrvNetId := '');]]></ST>
     </Implementation>
     <Method Name="Connect" Id="{e1b034f2-070e-4d08-81cf-cdc063f262be}">
       <Declaration><![CDATA[METHOD Connect : BOOL
@@ -38,6 +39,10 @@ END_IF
       <Declaration><![CDATA[METHOD Disconnect : BOOL]]></Declaration>
       <Implementation>
         <ST><![CDATA[_clientServerControl.bEnable := FALSE;
+IF _clientServerControl.hSocket.handle <> 0 THEN
+	_socketCloseAll(bExecute := FALSE, sSrvNetId := '');
+	_socketCloseAll(bExecute := TRUE, sSrvNetId := '');
+END_IF
 Disconnect := NOT THIS^.IsConnected;
 
 
@@ -124,13 +129,13 @@ VAR_INST
 	arrSendDataBytes	: ARRAY[0..255] OF BYTE;
 	nSendDataCount		: UDINT;
 	response	: Tc2_System.T_MaxString;
-	TonDelay	: TON := (PT := T#100MS);
+	TonDelay	: TON := (PT := T#200MS);
 END_VAR
 ]]></Declaration>
       <Implementation>
         <ST><![CDATA[CASE state OF
 	E_SocketSendState.READY:
-		_socketSend(bExecute := FALSE);
+		_socketReceive(bExecute := FALSE);
 		IF sCommand <> '' THEN
 			// Clear array for new data
 			Tc2_System.MEMSET(

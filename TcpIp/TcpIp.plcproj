@@ -167,9 +167,6 @@
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\ST_LaudaActualValuesCollection.TcDUT">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaResponse.TcPOU">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\POUs\Helpers\FB_LaudaCommandGenerator.TcPOU">
       <SubType>Code</SubType>
     </Compile>

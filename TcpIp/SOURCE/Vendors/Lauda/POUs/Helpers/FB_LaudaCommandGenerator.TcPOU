@@ -13,6 +13,50 @@ END_VAR
     <Implementation>
       <ST><![CDATA[]]></ST>
     </Implementation>
+    <Method Name="KeyboardMaserLock" Id="{83272681-e44e-0fd7-1961-98110c754487}">
+      <Declaration><![CDATA[METHOD KeyboardMaserLock : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardMaserLock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardMaserUnlock" Id="{3382960f-d5fe-0261-0154-79b7a909c011}">
+      <Declaration><![CDATA[METHOD KeyboardMaserUnlock : T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardMaserUnlock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardMaster_UlockLock, 
+	STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardRemoteUnitLock" Id="{cdd9d556-beb0-0bf3-3580-511bbfb90563}">
+      <Declaration><![CDATA[METHOD KeyboardRemoteUnitLock : Tc2_System.T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardRemoteUnitLock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardRemoteControlUnit_UnlockLock, 
+	STR2 := '1'));]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="KeyboardRemoteUnitUnlock" Id="{9c6f2f41-3e26-0c14-17e1-bc28d6ab1da3}">
+      <Declaration><![CDATA[METHOD KeyboardRemoteUnitUnlock : Tc2_System.T_MaxString
+VAR_INPUT
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[KeyboardRemoteUnitUnlock := LaudaHelper.AddSuffix(CONCAT(
+	STR1 := LaudaHelper.Commands.Write.Rights.KeyboardRemoteControlUnit_UnlockLock, 
+	STR2 := '0'));]]></ST>
+      </Implementation>
+    </Method>
     <Method Name="SafetyActivate" Id="{bf63396d-28e1-4bd8-b5ea-c1f5b8485007}">
       <Declaration><![CDATA[// Activates safety mode.
 METHOD PUBLIC SafetyActivate : T_MaxString
