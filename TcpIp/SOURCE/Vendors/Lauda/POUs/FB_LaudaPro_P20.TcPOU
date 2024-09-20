@@ -15,6 +15,7 @@ VAR_INPUT
 	bConnect		: BOOL;	// Connects to the device via TCP or disconnects if set to FALSE
 	bKeyboardUnlock	: BOOL;	// Unlocks keyboard control
 	bResendValues	: BOOL;	// Resends all current values to the device
+	logger			: ZigaLibs_Core.I_LoggerEx;
 END_VAR
 
 VAR
@@ -329,14 +330,14 @@ END_VAR]]></Declaration>
       <Implementation>
         <ST><![CDATA[FOR i := 0 TO 99 BY 1 DO
 	// Limit looping not to abuse PLC task
-	IF _errorBuffer[i].ResponseErrorInfo = '' AND _errorBuffer[i].SendCommand = '' THEN
+	IF _errorBuffer[i].ResponseErrorInfo = E_LaudaResponseError.NO_ERROR AND _errorBuffer[i].SendCommand = '' THEN
 		EXIT;
 	END_IF
 	_errorBuffer[i] := _errorBuffer[i + 1];
 END_FOR
 
 _errorBuffer[0].SendCommand := sendCommand;
-_errorBuffer[1].ResponseErrorInfo := LaudaHelper.ParseResponseError(Response := response);
+_errorBuffer[0].ResponseErrorInfo := LaudaHelper.ParseResponseError(Response := response);
 
 _error := TRUE;]]></ST>
       </Implementation>

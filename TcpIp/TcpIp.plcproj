@@ -75,8 +75,12 @@
     <Author>Žiga Javornik</Author>
     <Description>TcpIp and vendors implementing the procol library collection</Description>
     <CombineIds>true</CombineIds>
+    <CompilerDefines>UnitTests</CompilerDefines>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="PlcTask.TcTTO">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="SOURCE\TcpIp\DUTs\E_SocketSendState.TcDUT">
       <SubType>Code</SubType>
     </Compile>
@@ -84,6 +88,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\TcpIp\POUs\FB_TcpIpCommControl.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\E_LaudaResponseError.TcDUT">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="SOURCE\Vendors\Lauda\DUTs\Errors\ST_LaudaFaults.TcDUT">
@@ -185,10 +192,17 @@
     <Compile Include="SOURCE\Vendors\Lauda\POUs\FB_LaudaPro_P20.TcPOU">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="TESTS\FB_LaudaHelperTests.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TESTS\PRG_TESTS.TcPOU">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DUTs" />
     <Folder Include="GVLs" />
+    <Folder Include="TESTS" />
     <Folder Include="SOURCE\TcpIp" />
     <Folder Include="SOURCE\TcpIp\DUTs" />
     <Folder Include="SOURCE\TcpIp\POUs" />
@@ -306,6 +320,53 @@
     <PlaceholderReference Include="Tc3_Module">
       <DefaultResolution>Tc3_Module, * (Beckhoff Automation GmbH)</DefaultResolution>
       <Namespace>Tc3_Module</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="TcUnit">
+      <DefaultResolution>TcUnit, * (www.tcunit.org)</DefaultResolution>
+      <Parameters>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSUITES</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFTESTSFOREACHTESTSUITE</Key>
+          <Value>100</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>MAXNUMBEROFASSERTSFOREACHTESTSUITE</Key>
+          <Value>1000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>LOGEXTENDEDRESULTS</Key>
+          <Value>TRUE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITENABLEPUBLISH</Key>
+          <Value>FALSE</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITBUFFERSIZE</Key>
+          <Value>65535</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>XUNITFILEPATH</Key>
+          <Value>'C:\tcunit_xunit_testresults.xml'</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>ADSLOGMESSAGEFIFORINGBUFFERSIZE</Key>
+          <Value>2000</Value>
+        </Parameter>
+        <Parameter ListName="GVL_PARAM_TCUNIT" xmlns="">
+          <Key>TIMEBETWEENTESTSUITESEXECUTION</Key>
+          <Value>TIME#0ms</Value>
+        </Parameter>
+      </Parameters>
+      <Condition>UnitTests</Condition>
+      <Namespace>TcUnit</Namespace>
+    </PlaceholderReference>
+    <PlaceholderReference Include="ZigaLibs_Core">
+      <DefaultResolution>Core, * (Ziga)</DefaultResolution>
+      <Namespace>ZigaLibs_Core</Namespace>
     </PlaceholderReference>
   </ItemGroup>
   <ItemGroup>

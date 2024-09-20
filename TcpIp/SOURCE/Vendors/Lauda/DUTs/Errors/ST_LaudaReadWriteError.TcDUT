@@ -6,7 +6,7 @@
 TYPE ST_LaudaReadWriteError :
 STRUCT
 	SendCommand			: STRING(100);
-	ResponseErrorInfo	: STRING(100);
+	ResponseErrorInfo	: E_LaudaResponseError;
 END_STRUCT
 END_TYPE
 

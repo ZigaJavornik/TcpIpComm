@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.13">
+  <POU Name="PRG_TESTS" Id="{0c7d9cf0-e653-0775-0664-a5a4eaf3b4d0}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM PRG_TESTS
+VAR
+	LaudaHelperTest	: FB_LaudaHelperTests;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[TcUnit.RUN();]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
